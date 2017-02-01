@@ -10,7 +10,7 @@ require "kemal-session"
 # Without CSRF protection, your app is vulnerable to replay attacks
 # where an attacker can re-submit a form.
 #
-class CSRF < HTTP::Handler
+class CSRF < Kemal::Handler
   HEADER          = "X_CSRF_TOKEN"
   ALLOWED_METHODS = %w(GET HEAD OPTIONS TRACE)
   PARAMETER_NAME  = "authenticity_token"
