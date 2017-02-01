@@ -16,7 +16,6 @@ class CSRF < Kemal::Handler
 
   def call(context)
     unless context.session.string?("csrf")
-      p "recreating csrf"
       context.session.string("csrf", SecureRandom.hex(16))
     end
 
@@ -37,7 +36,6 @@ class CSRF < Kemal::Handler
       # context.session.string("csrf", SecureRandom.hex(16))
       return call_next(context)
     else
-      p "CSRF don't match", current_token, submitted
       context.response.status_code = 403
       context.response.print @error
     end
