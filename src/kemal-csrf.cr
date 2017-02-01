@@ -33,7 +33,7 @@ class CSRF < Kemal::Handler
 
     if current_token == submitted
       # reset the token so it can't be used again
-      context.session.string("csrf", SecureRandom.hex(16))
+      # context.session.string("csrf", SecureRandom.hex(16)) # not needed, breaks back button - https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet
       return call_next(context)
     else
       context.response.status_code = 403
