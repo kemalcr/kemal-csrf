@@ -11,7 +11,7 @@ require "kemal-session"
 # where an attacker can re-submit a form.
 #
 class CSRF < Kemal::Handler
-  def initialize(@header = "X_CSRF_TOKEN", @allowed_methods = %w(GET HEAD OPTIONS TRACE), @parameter_name = "authenticity_token")
+  def initialize(@header = "X_CSRF_TOKEN", @allowed_methods = %w(GET HEAD OPTIONS TRACE), @parameter_name = "authenticity_token", @error = "Forbidden")
   end
 
   def call(context)
@@ -39,7 +39,7 @@ class CSRF < Kemal::Handler
     else
       p "CSRF don't match", current_token, submitted
       context.response.status_code = 403
-      context.response.print "Forbidden"
+      context.response.print @error
     end
   end
 end
