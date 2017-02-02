@@ -10,23 +10,22 @@ require "kemal-session"
 # Without CSRF protection, your app is vulnerable to replay attacks
 # where an attacker can re-submit a form.
 #
-class CSRF < HTTP::Handler
-  HEADER          = "X_CSRF_TOKEN"
-  ALLOWED_METHODS = %w(GET HEAD OPTIONS TRACE)
-  PARAMETER_NAME  = "authenticity_token"
+class CSRF < Kemal::Handler
+  def initialize(@header = "X_CSRF_TOKEN", @allowed_methods = %w(GET HEAD OPTIONS TRACE), @parameter_name = "authenticity_token", @error = "Forbidden")
+  end
 
   def call(context)
     unless context.session.string?("csrf")
       context.session.string("csrf", SecureRandom.hex(16))
     end
 
-    return call_next(context) if ALLOWED_METHODS.includes?(context.request.method)
+    return call_next(context) if @allowed_methods.includes?(context.request.method)
 
     req = context.request
-    submitted = if req.headers[HEADER]?
-                  req.headers[HEADER]
-                elsif context.params.body[PARAMETER_NAME]?
-                  context.params.body[PARAMETER_NAME]
+    submitted = if req.headers[@header]?
+                  req.headers[@header]
+                elsif context.params.body[@parameter_name]?
+                  context.params.body[@parameter_name]
                 else
                   "nothing"
                 end
@@ -34,11 +33,11 @@ class CSRF < HTTP::Handler
 
     if current_token == submitted
       # reset the token so it can't be used again
-      context.session.string("csrf", SecureRandom.hex(16))
+      # context.session.string("csrf", SecureRandom.hex(16))
       return call_next(context)
     else
       context.response.status_code = 403
-      context.response.print "Forbidden"
+      context.response.print @error
     end
   end
 end

@@ -18,11 +18,18 @@ dependencies:
 
 ## Usage
 
-
+Basic Use
 ```crystal
 require "kemal-csrf"
 
 add_handler CSRF.new
+```
+You can also change the name of the form field, header name, the methods which don't need csrf and error message.
+All of these are optional
+```crystal
+require "kemal-csrf"
+
+add_handler CSRF.new(header: "X_CSRF_TOKEN",allowed_methods: ["GET", "HEAD", "OPTIONS", "TRACE"],parameter_name: "_csrf", error: "CSRF Error" )
 ```
 
 ## Contributing
