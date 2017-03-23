@@ -16,7 +16,14 @@ class CSRF < Kemal::Handler
 
   def call(context)
     unless context.session.string?("csrf")
-      context.session.string("csrf", SecureRandom.hex(16))
+      csrf_token = SecureRandom.hex(16)
+      context.session.string("csrf", csrf_token)
+      context.response.cookies << HTTP::Cookie.new(
+        name: @parameter_name,
+        value: csrf_token,
+        expires: Time.now.to_utc + Session.config.timeout,
+        http_only: false
+      )
     end
 
     return call_next(context) if @allowed_methods.includes?(context.request.method)
@@ -30,7 +37,6 @@ class CSRF < Kemal::Handler
                   "nothing"
                 end
     current_token = context.session.string("csrf")
-
     if current_token == submitted
       # reset the token so it can't be used again
       # context.session.string("csrf", SecureRandom.hex(16))
