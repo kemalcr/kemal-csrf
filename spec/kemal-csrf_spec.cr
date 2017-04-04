@@ -32,7 +32,7 @@ describe "CSRF" do
     request = HTTP::Request.new("POST", "/",
       body: "authenticity_token=#{current_token}&hasan=lamec",
       headers: HTTP::Headers{"Content-Type" => "application/x-www-form-urlencoded",
-        "Set-Cookie"   => client_response.headers["Set-Cookie"]})
+                             "Set-Cookie"   => client_response.headers["Set-Cookie"]})
     io, context = process_request(handler, request)
     client_response = HTTP::Client::Response.from_io(io, decompress: false)
     client_response.status_code.should eq 404
@@ -53,11 +53,41 @@ describe "CSRF" do
     request = HTTP::Request.new("POST", "/",
       body: "hasan=lamec",
       headers: HTTP::Headers{"Content-Type" => "application/x-www-form-urlencoded",
-        "Set-Cookie"   => client_response.headers["Set-Cookie"],
-        "x-csrf-token" => current_token})
+                             "Set-Cookie"   => client_response.headers["Set-Cookie"],
+                             "x-csrf-token" => current_token})
     io, context = process_request(handler, request)
     client_response = HTTP::Client::Response.from_io(io, decompress: false)
     client_response.status_code.should eq 404
+  end
+
+  it "allows POSTs to allowed route" do
+    handler = CSRF.new(allowed_routes: ["/allowed"])
+    request = HTTP::Request.new("POST", "/allowed/",
+      body: "authenticity_token=cemal&hasan=lamec",
+      headers: HTTP::Headers{"Content-Type" => "application/x-www-form-urlencoded"})
+    io, context = process_request(handler, request)
+    client_response = HTTP::Client::Response.from_io(io, decompress: false)
+    client_response.status_code.should eq 404
+  end
+
+  it "allows POSTs to route using wildcards" do
+    handler = CSRF.new(allowed_routes: ["/everything/*"])
+    request = HTTP::Request.new("POST", "/everything/here/and",
+      body: "authenticity_token=cemal&hasan=lamec",
+      headers: HTTP::Headers{"Content-Type" => "application/x-www-form-urlencoded"})
+    io, context = process_request(handler, request)
+    client_response = HTTP::Client::Response.from_io(io, decompress: false)
+    client_response.status_code.should eq 404
+  end
+
+  it "not allows POSTs to mismatched route using wildcards" do
+    handler = CSRF.new(allowed_routes: ["/nothing/*"])
+    request = HTTP::Request.new("POST", "/something/",
+      body: "authenticity_token=cemal&hasan=lamec",
+      headers: HTTP::Headers{"Content-Type" => "application/x-www-form-urlencoded"})
+    io, context = process_request(handler, request)
+    client_response = HTTP::Client::Response.from_io(io, decompress: false)
+    client_response.status_code.should eq 403
   end
 end
 
