@@ -11,7 +11,12 @@ require "kemal-session"
 # where an attacker can re-submit a form.
 #
 class CSRF < Kemal::Handler
-  def initialize(@header = "X_CSRF_TOKEN", @allowed_methods = %w(GET HEAD OPTIONS TRACE), @parameter_name = "authenticity_token", @error = "Forbidden", @allowed_routes = [] of String)
+  
+  def initialize(@header = "X_CSRF_TOKEN", @allowed_methods = %w(GET HEAD OPTIONS TRACE), @parameter_name = "authenticity_token", @error : String | (HTTP::Server::Context->String) = "Forbidden", @allowed_routes = [] of String)
+    setup
+  end 
+
+  def setup
     @allowed_routes.each do |path|
       class_name = {{@type.name}}
       %w(GET HEAD OPTIONS TRACE PUT POST).each do |method|
@@ -19,7 +24,7 @@ class CSRF < Kemal::Handler
       end
     end
   end
-
+  
   def call(context)
     return call_next(context) if exclude_match?(context)
     unless context.session.string?("csrf")
@@ -49,7 +54,11 @@ class CSRF < Kemal::Handler
       return call_next(context)
     else
       context.response.status_code = 403
-      context.response.print @error
+      if (error = @error) && !error.is_a?(String)
+        context.response.print error.call(context)
+      else
+        context.response.print error
+      end
     end
   end
 end

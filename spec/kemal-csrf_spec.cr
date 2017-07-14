@@ -1,5 +1,4 @@
 require "./spec_helper"
-
 describe "CSRF" do
   it "sends GETs to next handler" do
     handler = CSRF.new
@@ -89,6 +88,25 @@ describe "CSRF" do
     client_response = HTTP::Client::Response.from_io(io, decompress: false)
     client_response.status_code.should eq 403
   end
+
+  it "outputs error string" do
+    handler = CSRF.new(error: "Oh no you have an error")
+    request = HTTP::Request.new("POST", "/")
+    io_with_context = create_request_and_return_io(handler, request)
+    client_response = HTTP::Client::Response.from_io(io_with_context, decompress: false)
+    client_response.status_code.should eq 403
+    client_response.body.should eq "Oh no you have an error"
+  end
+
+  it "call an error proc with context" do
+    handler = CSRF.new(error: ->myerrorhandler(HTTP::Server::Context))
+    request = HTTP::Request.new("POST", "/")
+    io_with_context = create_request_and_return_io(handler, request)
+    client_response = HTTP::Client::Response.from_io(io_with_context, decompress: false)
+    client_response.status_code.should eq 403
+    client_response.body.should eq "Error from handler"
+  end
+
 end
 
 def process_request(handler, request)
@@ -99,4 +117,8 @@ def process_request(handler, request)
   response.close
   io.rewind
   {io, context}
+end
+
+def myerrorhandler(ctx : HTTP::Server::Context)
+  "Error from handler"
 end
