@@ -39,6 +39,30 @@ add_handler CSRF.new(
 )
 ```
 
+If you need to have some logic within your error response, you can also pass it a proc (a pointer to a function)
+
+
+```crystal
+require "kemal-csrf"
+
+add_handler CSRF.new(
+  header: "X_CSRF_TOKEN",
+  allowed_methods: ["GET", "HEAD", "OPTIONS", "TRACE"],
+  allowed_routes: ["/api/somecallback"],
+  parameter_name: "_csrf", 
+  error: ->myerrorhandler(HTTP::Server::Context)
+)
+
+def myerrorhandler(env)
+  if env.request.headers["Content-Type"]? == "application/json"
+    {"error" => "csrf error"}.to_json
+  else
+    "<html><head><title>Error</title><body><h1>You cannot post to this route without a valid csrf token</h1></body></html>"
+  end
+end
+```
+
+
 ## Contributing
 
 1. Fork it ( https://github.com/kemalcr/kemal-csrf/fork )
