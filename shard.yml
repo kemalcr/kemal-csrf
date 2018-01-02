@@ -1,15 +1,14 @@
 name: kemal-csrf
-version: 0.3.0
+version: 0.4.0
 
 dependencies:
   kemal-session:
     github: kemalcr/kemal-session
-    #version: 0.8.0
-    branch: master
+    version: 0.9.0
 
 development_dependencies:
   kemal:
-    github: sdogruyol/kemal
+    github: kemalcr/kemal
     version: 0.22.0
 
 authors:
