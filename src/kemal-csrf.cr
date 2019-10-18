@@ -32,7 +32,7 @@ class CSRF < Kemal::Handler
       context.response.cookies << HTTP::Cookie.new(
         name: @parameter_name,
         value: csrf_token,
-        expires: Time.now.to_utc + Kemal::Session.config.timeout,
+        expires: Time.local.to_utc + Kemal::Session.config.timeout,
         http_only: false
       )
     end
