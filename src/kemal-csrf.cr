@@ -1,3 +1,4 @@
+require "random/secure"
 require "kemal"
 require "kemal-session"
 
