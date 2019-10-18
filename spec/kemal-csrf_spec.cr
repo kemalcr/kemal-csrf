@@ -1,4 +1,5 @@
 require "./spec_helper"
+
 describe "CSRF" do
   it "sends GETs to next handler" do
     handler = CSRF.new
@@ -106,7 +107,6 @@ describe "CSRF" do
     client_response.status_code.should eq 403
     client_response.body.should eq "Error from handler"
   end
-
 end
 
 def process_request(handler, request)
