@@ -1,4 +1,3 @@
-require "random/secure"
 require "kemal"
 require "kemal-session"
 
@@ -49,7 +48,7 @@ class CSRF < Kemal::Handler
     current_token = context.session.string("csrf")
     if current_token == submitted
       # reset the token so it can't be used again
-      # context.session.string("csrf", SecureRandom.hex(16))
+      # context.session.string("csrf", Random::Secure.hex(16))
       return call_next(context)
     else
       context.response.status_code = 403
