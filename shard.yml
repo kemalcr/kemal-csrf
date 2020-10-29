@@ -1,10 +1,10 @@
 name: kemal-csrf
-version: 0.6.0
+version: 0.6.1
 
 dependencies:
   kemal-session:
     github: kemalcr/kemal-session
-    version: 0.12.0
+    version: ~> 0.12.0
 
 development_dependencies:
   kemal:
