@@ -25,6 +25,11 @@ require "kemal-csrf"
 add_handler CSRF.new
 ```
 
+To access the CSRF token of the active session you can do the following in your .ecr form(s)
+```html
+<input type="hidden" name="authenticity_token" value='<%= env.session.string("csrf") %>'>
+```
+
 You can also change the name of the form field, header name, the methods which don't need csrf,error message and routes which you don't want csrf to apply.
 All of these are optional
 ```crystal
