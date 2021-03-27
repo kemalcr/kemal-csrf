@@ -1,19 +1,19 @@
 name: kemal-csrf
-version: 0.7.0
+version: 0.8.0
 
 dependencies:
   kemal-session:
     github: kemalcr/kemal-session
-    version: 0.12.1
+    version: "~> 1.0.0"
 
 development_dependencies:
   kemal:
     github: kemalcr/kemal
+    version: "~> 1.0.0"
 
 authors:
   - Serdar Dogruyol <dogruyolserdar@gmail.com>
 
-
-crystal: 0.35.0
+crystal: ">= 1.0"
 
 license: MIT
