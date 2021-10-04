@@ -40,7 +40,9 @@ add_handler CSRF.new(
   allowed_methods: ["GET", "HEAD", "OPTIONS", "TRACE"],
   allowed_routes: ["/api/somecallback"],
   parameter_name: "_csrf", 
-  error: "CSRF Error" 
+  error: "CSRF Error",
+  http_only: false,
+  samesite: nil,
 )
 ```
 
