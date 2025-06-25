@@ -1,13 +1,16 @@
 # kemal-csrf
 
+> **⚠️ DEPRECATED: This project has been moved to [kemal-session](https://github.com/kemalcr/kemal-session) and is no longer maintained as a separate package. Please use kemal-session for CSRF protection.**
+
 Adds CSRF protection to your [Kemal](http://kemalcr.com) application.
 
 Requires a session middleware to be initialized first.
 
 ## Installation
 
+> **Note: This package is deprecated. Please use [kemal-session](https://github.com/kemalcr/kemal-session) instead, which now includes CSRF protection functionality.**
 
-Add this to your application's `shard.yml`:
+For historical reference, this package was previously installed by adding to your application's `shard.yml`:
 
 ```yaml
 dependencies:
@@ -15,8 +18,20 @@ dependencies:
     github: kemalcr/kemal-csrf
 ```
 
+**For new projects, use kemal-session:**
+
+```yaml
+dependencies:
+  kemal-session:
+    github: kemalcr/kemal-session
+```
+
 
 ## Usage
+
+> **Important: This package is deprecated. For current CSRF protection, please refer to the [kemal-session documentation](https://github.com/kemalcr/kemal-session).**
+
+### Historical Usage (Deprecated)
 
 Basic Use
 ```crystal
